@@ -25,6 +25,3 @@ renderer/ui.js
 renderer/ui.html
 renderer/assets/bridge.js
 renderer/assets/qwebchannel.js
-
-# 宠物图片来自易拓原版应用，是否公开发布待定
-renderer/pets/
