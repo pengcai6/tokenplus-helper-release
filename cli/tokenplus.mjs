@@ -292,7 +292,7 @@ function parseArgs(argv) {
   return args
 }
 
-const HELP = `用法：npx github:pengcai6/tokenplus-helper-release [选项]
+const HELP = `用法：npx tokenplus-helper [选项]
 
 不带选项时全程交互：选客户端 → 粘贴 API Key → 选模型 → 自动配置。
 

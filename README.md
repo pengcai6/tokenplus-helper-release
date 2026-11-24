@@ -6,7 +6,7 @@
 
 | 方式 | 适合 | 命令 |
 | --- | --- | --- |
-| 交互式配置器 | 一次配多个客户端 | `npx github:pengcai6/tokenplus-helper-release` |
+| 交互式配置器 | 一次配多个客户端 | `npx tokenplus-helper` |
 | 单客户端脚本 | 只配某一个 | `curl -fsSL …/codex-setup.sh \| bash` |
 | 桌面客户端 | 想要图形界面、换模型、测试连接、还原备份 | `curl -fsSL …/install.sh \| bash` |
 
@@ -15,7 +15,7 @@
 ## 一、交互式配置器（推荐）
 
 ```bash
-npx github:pengcai6/tokenplus-helper-release
+npx tokenplus-helper
 ```
 
 没有 Node.js 时用纯 bash 版，流程相同：
@@ -51,7 +51,7 @@ curl -fsSL https://raw.githubusercontent.com/pengcai6/tokenplus-helper-release/m
 不想交互时可以全部用参数给出：
 
 ```bash
-npx github:pengcai6/tokenplus-helper-release --tools claude,codex --key sk-你的key --model 模型名
+npx tokenplus-helper --tools claude,codex --key sk-你的key --model 模型名
 ```
 
 | 参数 | 说明 |
@@ -172,9 +172,7 @@ npm run dev                 # 开发模式
 ./scripts/release.sh        # 打包并上传到 GitHub Releases
 ```
 
-需要 Rust、Node.js 18+ 和 Xcode 命令行工具。宠物页用到的图片（`renderer/pets/`）没有放进仓库，从源码构建时宠物页的预览图会是空的，其他功能不受影响。
-
-前端可以脱离后端预览：在 `renderer/` 下起一个静态服务器，打开 `index.html?mock=1`。
+需要 Rust、Node.js 18+ 和 Xcode 命令行工具。前端可以脱离后端预览：在 `renderer/` 下起一个静态服务器，打开 `index.html?mock=1`。
 
 ## 来源说明
 
