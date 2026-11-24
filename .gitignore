@@ -1,0 +1,30 @@
+node_modules/
+dist/
+.DS_Store
+__pycache__/
+.venv/
+
+# Rust / Tauri build output
+src-tauri/target/
+src-tauri/gen/schemas/
+
+# 早期的 Python 原型，已被 Tauri 版取代，不随仓库发布
+/helper/
+/ui/
+/assets/
+/run.py
+/requirements.txt
+
+# 易拓原版应用里拆出来的文件：前端已重写，不再引用，不发布
+renderer/assets/index-DE_54pWa.js
+renderer/assets/index-DT2i4bhp.css
+renderer/assets/logo-CI_QnkmO.png
+
+# 重写成 Vue 之前的旧前端和旧桥接层，已不再使用
+renderer/ui.js
+renderer/ui.html
+renderer/assets/bridge.js
+renderer/assets/qwebchannel.js
+
+# 宠物图片来自易拓原版应用，是否公开发布待定
+renderer/pets/

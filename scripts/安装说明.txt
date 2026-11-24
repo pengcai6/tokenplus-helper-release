@@ -1,0 +1,12 @@
+TokenPlus 小助手 · 安装说明
+
+1. 把「TokenPlus 小助手」拖进「应用程序」。
+2. 打开「终端」（启动台 → 其他 → 终端），粘贴下面这一行并回车：
+
+   xattr -dr com.apple.quarantine "/Applications/TokenPlus 小助手.app"
+
+3. 回到「应用程序」，双击打开即可，以后不会再提示。
+
+更省事的方式：不用这个 DMG，直接在终端粘贴这一行，自动下载安装：
+
+   curl -fsSL https://raw.githubusercontent.com/pengcai6/tokenplus-helper-release/main/install.sh | bash
