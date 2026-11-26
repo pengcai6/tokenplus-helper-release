@@ -1,6 +1,6 @@
 {
   "name": "tokenplus-helper",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "TokenPlus 小助手：把 Claude Code、Codex、Grok 等 AI 编程工具一键接入 TokenPlus（桌面客户端 + 终端配置器）",
   "scripts": {
     "tauri": "tauri",
@@ -16,14 +16,17 @@
   "files": [
     "cli/tokenplus.mjs",
     "setup.sh",
+    "setup.ps1",
     "*-setup.sh",
+    "*-setup.ps1",
     "*-config.mjs"
   ],
   "engines": {
     "node": ">=18"
   },
   "os": [
-    "darwin"
+    "darwin",
+    "win32"
   ],
   "repository": {
     "type": "git",

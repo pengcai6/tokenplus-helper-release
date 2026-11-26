@@ -10,7 +10,7 @@
 | 单客户端脚本 | 只配某一个 | `curl -fsSL …/codex-setup.sh \| bash` |
 | 桌面客户端 | 想要图形界面、换模型、测试连接、还原备份 | `curl -fsSL …/install.sh \| bash` |
 
-目前只支持 macOS。
+支持 macOS 和 Windows（桌面客户端仅 macOS）。
 
 ## 一、交互式配置器（推荐）
 
@@ -18,10 +18,16 @@
 npx tokenplus-helper
 ```
 
-没有 Node.js 时用纯 bash 版，流程相同：
+没有 Node.js 时用纯 bash 版（macOS）或 PowerShell 版（Windows），流程相同：
 
 ```bash
+# macOS
 curl -fsSL https://raw.githubusercontent.com/pengcai6/tokenplus-helper-release/main/setup.sh | bash
+```
+
+```powershell
+# Windows（PowerShell）
+irm https://raw.githubusercontent.com/pengcai6/tokenplus-helper-release/main/setup.ps1 | iex
 ```
 
 流程：
@@ -85,7 +91,20 @@ curl -fsSL https://raw.githubusercontent.com/pengcai6/tokenplus-helper-release/m
 curl -fsSL https://raw.githubusercontent.com/pengcai6/tokenplus-helper-release/main/workbuddy-setup.sh | bash
 ```
 
-也可以直接带上 Key 和模型，不再提问：
+Windows 用对应的 `.ps1` 脚本（PowerShell 里粘贴运行）：
+
+```powershell
+irm https://raw.githubusercontent.com/pengcai6/tokenplus-helper-release/main/claude-setup.ps1 | iex          # Claude Code
+irm https://raw.githubusercontent.com/pengcai6/tokenplus-helper-release/main/claude-desktop-setup.ps1 | iex  # Claude 桌面版
+irm https://raw.githubusercontent.com/pengcai6/tokenplus-helper-release/main/codex-setup.ps1 | iex           # Codex
+irm https://raw.githubusercontent.com/pengcai6/tokenplus-helper-release/main/grok-setup.ps1 | iex            # Grok Build
+irm https://raw.githubusercontent.com/pengcai6/tokenplus-helper-release/main/deepseek-setup.ps1 | iex        # DeepSeek Harness
+irm https://raw.githubusercontent.com/pengcai6/tokenplus-helper-release/main/workbuddy-setup.ps1 | iex       # WorkBuddy
+```
+
+不想用命令行的话，也可以下载对应的 `.cmd` 文件（同名，如 `codex-setup.cmd`）双击运行。Windows 上免提问的方式是先设置环境变量再运行：`$env:TOKENPLUS_API_KEY='sk-你的key'`、`$env:TOKENPLUS_MODEL='模型名'`。
+
+macOS 也可以直接带上 Key 和模型，不再提问：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/pengcai6/tokenplus-helper-release/main/codex-setup.sh | bash -s -- sk-你的key 模型名
@@ -144,7 +163,8 @@ cli/                    终端配置器
   tokenplus.mjs           npx 入口（交互界面）
   src/                    各脚本的源文件：common.sh 是公共部分，其余每个客户端一个
   build.sh                把 src/ 拼成根目录下可独立运行的 *-setup.sh
-*-setup.sh, setup.sh    生成出来的脚本，供 curl 直接运行（不要手改）
+*-setup.sh, setup.sh    生成出来的 macOS 脚本，供 curl 直接运行（不要手改）
+*-setup.ps1/.cmd, setup.ps1/.cmd  生成出来的 Windows 脚本（cli/build-win.sh 生成，源文件在 cli/src/win/）
 *-config.mjs            DeepSeek Harness / WorkBuddy 的配置写入逻辑
 install.sh              桌面客户端的一键安装脚本
 renderer/               桌面客户端前端（Vue 3，无构建步骤）

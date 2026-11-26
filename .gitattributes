@@ -1,0 +1,5 @@
+# Windows 产物按原字节存储：cmd 批处理头必须是 CRLF，ps1 带 BOM
+*-setup.cmd -text
+*-setup.ps1 -text
+setup.cmd -text
+setup.ps1 -text

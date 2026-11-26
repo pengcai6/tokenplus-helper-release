@@ -13,22 +13,33 @@ const SITE = 'https://www.tokenplus.cn/'
 const GATEWAY = (process.env.TOKENPLUS_GATEWAY || 'https://api.tokenplus.cn').replace(/\/$/, '')
 const HOME = os.homedir()
 const exists = (p) => fs.existsSync(p)
+const IS_WIN = process.platform === 'win32'
+const WIN_EXTS = ['', '.exe', '.cmd', '.ps1', '.bat']
 const onPath = (bin) =>
-  (process.env.PATH || '').split(path.delimiter).some((dir) => dir && exists(path.join(dir, bin)))
+  (process.env.PATH || '').split(path.delimiter).some((dir) =>
+    dir && (IS_WIN ? WIN_EXTS : ['']).some((ext) => exists(path.join(dir, bin + ext)))
+  )
+const localAppData = process.env.LOCALAPPDATA || path.join(HOME, 'AppData/Local')
 
 const TOOLS = [
   { id: 'claude', name: 'Claude Code', model: true,
     found: () => onPath('claude') || exists(path.join(HOME, '.claude')) },
   { id: 'claude-desktop', name: 'Claude 桌面版', model: false,
-    found: () => exists('/Applications/Claude.app') || exists(path.join(HOME, 'Applications/Claude.app')) },
+    found: () => IS_WIN
+      ? exists(path.join(localAppData, 'Programs/Claude/Claude.exe')) || exists(path.join(localAppData, 'AnthropicClaude/Claude.exe')) || exists(path.join(localAppData, 'Claude-3p'))
+      : exists('/Applications/Claude.app') || exists(path.join(HOME, 'Applications/Claude.app')) },
   { id: 'codex', name: 'Codex', model: true,
     found: () => onPath('codex') || exists('/Applications/Codex.app') || exists(path.join(HOME, '.codex')) },
   { id: 'grok', name: 'Grok Build', model: true,
     found: () => onPath('grok') || exists(path.join(HOME, '.grok')) },
   { id: 'deepseek', name: 'DeepSeek Harness', model: true,
-    found: () => exists('/Applications/DeepSeek Harness.app') || exists(path.join(HOME, 'Applications/DeepSeek Harness.app')) },
+    found: () => IS_WIN
+      ? exists(path.join(localAppData, 'Programs/DeepSeek Harness')) || exists(path.join(process.env.ProgramFiles || 'C:/Program Files', 'DeepSeek Harness'))
+      : exists('/Applications/DeepSeek Harness.app') || exists(path.join(HOME, 'Applications/DeepSeek Harness.app')) },
   { id: 'workbuddy', name: 'WorkBuddy', model: false,
-    found: () => exists('/Applications/WorkBuddy.app') || exists('/Applications/WorkBuddy AI.app') || exists(path.join(HOME, '.workbuddy')) },
+    found: () => IS_WIN
+      ? exists(path.join(localAppData, 'Programs/WorkBuddy')) || exists(path.join(localAppData, 'Programs/WorkBuddy AI')) || exists(path.join(HOME, '.workbuddy'))
+      : exists('/Applications/WorkBuddy.app') || exists('/Applications/WorkBuddy AI.app') || exists(path.join(HOME, '.workbuddy')) },
 ]
 
 // ---------- 主题 ----------
@@ -256,7 +267,10 @@ const keyValid = (key) => /^sk-[A-Za-z0-9_-]+$/.test(key)
 
 function runTool(tool, env) {
   return new Promise((resolve) => {
-    const child = spawn('bash', [path.join(ROOT, `${tool.id}-setup.sh`)], {
+    const command = IS_WIN ? 'powershell.exe' : 'bash'
+    const script = path.join(ROOT, IS_WIN ? `${tool.id}-setup.ps1` : `${tool.id}-setup.sh`)
+    const argv = IS_WIN ? ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', script] : [script]
+    const child = spawn(command, argv, {
       env: { ...process.env, ...env, TOKENPLUS_EMBED: '1', TOKENPLUS_ASSET_DIR: ROOT },
       stdio: ['ignore', 'pipe', 'pipe'],
     })
@@ -311,7 +325,7 @@ async function main() {
   if (args.version) {
     return void out.write(`${JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version}\n`)
   }
-  if (process.platform !== 'darwin') throw new Error('目前只支持 macOS')
+  if (process.platform !== 'darwin' && process.platform !== 'win32') throw new Error('目前只支持 macOS 和 Windows')
   const interactive = Boolean(process.stdin.isTTY && out.isTTY)
   banner()
   if (interactive) rawBegin()
@@ -354,7 +368,11 @@ async function main() {
     if (!models) throw new Error('API Key 无效、已停用或已过期')
   } else {
     if (!interactive) throw new Error('没有可交互的终端，请用 --key 传入 API Key')
-    if (args.open) spawn('/usr/bin/open', [SITE], { stdio: 'ignore' }).on('error', () => {})
+    if (args.open) {
+      const openCmd = IS_WIN ? 'cmd' : '/usr/bin/open'
+      const openArgs = IS_WIN ? ['/c', 'start', '', SITE] : [SITE]
+      spawn(openCmd, openArgs, { stdio: 'ignore' }).on('error', () => {})
+    }
     let error = ''
     for (let tries = 0; !models; tries++) {
       if (tries >= 5) throw new Error('多次输入无效，已退出')
